@@ -24,11 +24,17 @@ function ready() {
   console.log("Decrease > s");
   console.log("Quit > q");
   readline.question("", function(a) {
-    if (a.toUpperCase() == "W") motor.increaseW();
-    else if (a.toUpperCase() == "S") motor.decreaseW();
+    if (a.toUpperCase() == "W") {
+      motor.increaseW();
+      ready();
+    }
+    else if (a.toUpperCase() == "S") {
+      motor.decreaseW();
+      ready();
+    }
     else if (a.toUpperCase() == "Q") {
       motor.stop();
-      rl.close();
+      readline.close();
       process.exit(0);
     }
   });
@@ -43,11 +49,11 @@ yn("Before we calbirate, is this a bi-drectional motor? (Y/N)", function(bidirec
     readline.question("After you hear *BEEP BEEP* press ENTER", function() {
       function calibrateCentral() {
         motor.setW(0);
-        readline("After some more *BEEP BEEP* have finished, press ENTER", ready);
+        readline.question("After some more *BEEP BEEP* have finished, press ENTER", ready);
       }
       if (bidirectional) {
         motor.setW(-100);
-        readline("After some more *BEEP BEEP* have finished, press ENTER", calibrateCentral);
+        readline.question("After some more *BEEP BEEP* have finished, press ENTER", calibrateCentral);
       }
       else calibrateCentral();
     });

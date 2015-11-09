@@ -1,4 +1,5 @@
 var RPIO = require('rpio');
+RPIO.setMode('gpio');
 RPIO.pwmSetClockDivider(8); // 2.4MHz
 
 /**
@@ -7,11 +8,11 @@ RPIO.pwmSetClockDivider(8); // 2.4MHz
  */
 var RPIOMotor = function (name, pin, minWidth, maxWidth, bidirectional) {
   // Defaults
-  if (name === null) name = "Unnamed Motor";
-  if (pin === null) pin = 12;
-  if (minWidth === null) minWidth = 1000;
-  if (maxWidth === null) maxWidth = 2000;
-  if (bidirectional === null) bidirectional = false;
+  if (!name) name = "Unnamed Motor";
+  if (!pin) pin = 12;
+  if (!minWidth) minWidth = 1000;
+  if (!maxWidth) maxWidth = 2000;
+  if (!bidirectional) bidirectional = false;
 
   this.name = name;
   this.pin = pin;
@@ -26,7 +27,7 @@ module.exports = RPIOMotor;
 RPIOMotor.prototype.start = function (callback) {
   this.W = 0;
   RPIO.setFunction(this.pin, RPIO.PWM);
-  RPIO.pwmSetRange(this.pin, maxWidth);
+  RPIO.pwmSetRange(this.pin, this.maxWidth);
   RPIO.pwmSetData(this.pin, this.minWidth + (this.maxWidth - this.minWidth) / 2);
 };
 
@@ -41,11 +42,11 @@ RPIOMotor.prototype.setW = function(W) {
 };
 
 RPIOMotor.prototype.increaseW = function(step) {
-  if (step === null) step = 1;
+  if (!step) step = 1;
   this.setW(this.W + step);
 };
 
 RPIOMotor.prototype.decreaseW = function(step) {
-  if (step === null) step = 1;
+  if (!step) step = 1;
   this.setW(this.W - step);
 };
