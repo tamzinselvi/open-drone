@@ -44,7 +44,7 @@ var ODController = function (motors, sensometer, options) {
 module.exports = ODController;
 
 ODController.defaultOptions = {
-  type: Types.Quadcopter
+  type: Types.QuadcopterI
 };
 
 ODController.prototype.start = function () {
@@ -57,4 +57,8 @@ ODController.prototype.stop = function () {
 
 ODController.prototype.setMotorSpeed = function (motorSpeed) {
   for (var i in motorSpeed) this.motors[i].setW(motorSpeed[i]);
+};
+
+ODController.update = function() {
+  this.type.update();
 };

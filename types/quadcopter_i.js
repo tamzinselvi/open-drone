@@ -16,25 +16,25 @@ var PIDController = require("node-pid-controller");
  *
  *             BACK
  *
- * Motor 00: CW  | +Y / +Pitch
- * Motor 01: CCW | +X / +Roll
- * Motor 02: CW  | -X / -Roll
- * Motor 03: CCW | -Y / -Pitch
+ * Motor 00: CW  | +Y / +Pitch +Yaw
+ * Motor 01: CCW | +X / +Roll -Yaw
+ * Motor 02: CW  | -X / -Roll +Yaw
+ * Motor 03: CCW | -Y / -Pitch -Yaw
  *
  */
-var QuadcopterType = Object.create(MulticopterType);
+var QuadcopterIType = Object.create(MulticopterType);
 
 // Setup PID controllers
-QuadcopterType.prototype.pitchPIDController = new PIDController(1, 0, 0);
-QuadcopterType.prototype.yawPIDController = new PIDController(1, 0, 0);
-QuadcopterType.prototype.rollPIDController = new PIDController(1, 0, 0);
-QuadcopterType.prototype.dxPIDController = new PIDController(1, 0, 0);
-QuadcopterType.prototype.dyPIDController = new PIDController(1, 0, 0);
-QuadcopterType.prototype.dzPIDController = new PIDController(1, 0, 0);
-QuadcopterType.prototype.altitudePIDController = new PIDController(1, 0, 0);
+QuadcopterIType.prototype.pitchPIDController = new PIDController(1, 0, 0);
+QuadcopterIType.prototype.yawPIDController = new PIDController(1, 0, 0);
+QuadcopterIType.prototype.rollPIDController = new PIDController(1, 0, 0);
+QuadcopterIType.prototype.dxPIDController = new PIDController(1, 0, 0);
+QuadcopterIType.prototype.dyPIDController = new PIDController(1, 0, 0);
+QuadcopterIType.prototype.dzPIDController = new PIDController(1, 0, 0);
+QuadcopterIType.prototype.altitudePIDController = new PIDController(1, 0, 0);
 
 // Motor speed functions, updates PID
-QuadcopterType.prototype.getPitchMotorSpeed = function() {
+QuadcopterIType.prototype.getPitchMotorSpeed = function() {
   var pitchAdjust = this.pitchPIDController.update(this.controller.sensometer.pitch());
   return {
     0: pitchAdjust,
@@ -44,17 +44,17 @@ QuadcopterType.prototype.getPitchMotorSpeed = function() {
   };
 };
 
-QuadcopterType.prototype.getYawMotorSpeed = function() {
+QuadcopterIType.prototype.getYawMotorSpeed = function() {
   var yawAdjust = this.yawPIDController.update(this.controller.sensometer.yaw());
   return {
     0: yawAdjust,
-    1: yawAdjust,
-    2: -yawAdjust,
+    1: -yawAdjust,
+    2: yawAdjust,
     3: -yawAdjust
   };
 };
 
-QuadcopterType.prototype.getRollMotorSpeed = function() {
+QuadcopterIType.prototype.getRollMotorSpeed = function() {
   var rollAdjust = this.rollPIDController.update(this.controller.sensometer.roll());
   return {
     0: 0,
@@ -65,10 +65,10 @@ QuadcopterType.prototype.getRollMotorSpeed = function() {
 };
 
 // Disable these two for now
-// QuadcopterType.prototype.getDXMotorSpeed = zeroSpeed;
-// QuadcopterType.prototype.getDYMotorSpeed = zeroSpeed;
+// QuadcopterIType.prototype.getDXMotorSpeed = zeroSpeed;
+// QuadcopterIType.prototype.getDYMotorSpeed = zeroSpeed;
 
-QuadcopterType.prototype.getDZMotorSpeed = function() {
+QuadcopterIType.prototype.getDZMotorSpeed = function() {
   var dzAdjust = this.dzPIDController.update(this.controller.sensometer.dz());
   return {
     0: dzAdjust,
@@ -78,7 +78,7 @@ QuadcopterType.prototype.getDZMotorSpeed = function() {
   };
 };
 
-QuadcopterType.prototype.getAltitudeMotorSpeed = function() {
+QuadcopterIType.prototype.getAltitudeMotorSpeed = function() {
   var altitudeAdjust = this.altitudePIDController.update(this.controller.sensometer.altitude());
   return {
     0: altitudeAdjust,
