@@ -1,10 +1,11 @@
 var ZeroRPC = require("zerorpc");
 
-var zeroRPClient = new Zerorpc.Client();
+var zeroRPCClient = new ZeroRPC.Client();
 zeroRPCClient.connect("tcp://127.0.0.1:4242");
 
 var RPIO = {
   addChannelPulse: function(gpio, rate, callback) {
+    if (!callback) callback = function() {};
     zeroRPCClient.invoke("addChannelPulse", gpio, rate, callback);
   }
 };

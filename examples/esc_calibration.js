@@ -1,7 +1,7 @@
 var RPIOMotor = require("../motors").RPIOMotor;
 var Readline = require('readline');
 
-var motor = new RPIOMotor();
+var motor;
 
 var readline = Readline.createInterface({
   input: process.stdin,
@@ -37,17 +37,24 @@ function ready() {
       readline.close();
       process.exit(0);
     }
+    else {
+      console.log("Invalid entry!");
+      ready();
+    }
   });
 }
 
-yn("Should we initialize the ESC? (Y/n)", function(init) {
-  if (init) readline.question("Disconnect your ESC from power and press ENTER", function() {
-    motor.setW(100);
-    console.log("Connect your ESC to your power source");
-    readline.question("After you hear *BEEP BEEP* press ENTER", function() {
-      motor.setW(0);
-      readline.question("After some more *BEEP BEEP* have finished, press ENTER", ready);
+readline.question("Which GPIO pin are we using?", function(gpio) {
+  motor = new RPIOMotor("", Number.parseInt(gpio));
+  yn("Should we initialize the ESC? (Y/n)", function(init) {
+    if (init) readline.question("Disconnect your ESC from power and press ENTER", function() {
+      motor.setW(100);
+      console.log("Connect your ESC to your power source");
+      readline.question("After you hear *BEEP BEEP* press ENTER", function() {
+        motor.setW(0);
+        readline.question("After some more *BEEP BEEP* have finished, press ENTER", ready);
+      });
     });
+    else ready();
   });
-  else ready();
 });
