@@ -40,22 +40,14 @@ function ready() {
   });
 }
 
-yn("Before we calbirate, is this a bi-drectional motor? (Y/N)", function(bidirectional) {
-  motor.bidirecitonal = bidirectional;
-  readline.question("Disconnect your ESC from power and press ENTER", function() {
-    motor.start();
+yn("Should we initialize the ESC? (Y/n)", function(init) {
+  if (init) readline.question("Disconnect your ESC from power and press ENTER", function() {
     motor.setW(100);
     console.log("Connect your ESC to your power source");
     readline.question("After you hear *BEEP BEEP* press ENTER", function() {
-      function calibrateCentral() {
-        motor.setW(0);
-        readline.question("After some more *BEEP BEEP* have finished, press ENTER", ready);
-      }
-      if (bidirectional) {
-        motor.setW(-100);
-        readline.question("After some more *BEEP BEEP* have finished, press ENTER", calibrateCentral);
-      }
-      else calibrateCentral();
+      motor.setW(0);
+      readline.question("After some more *BEEP BEEP* have finished, press ENTER", ready);
     });
   });
+  else ready();
 });

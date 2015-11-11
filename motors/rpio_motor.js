@@ -1,44 +1,41 @@
-var RPIO = require('rpio');
-RPIO.setMode('gpio');
-RPIO.pwmSetClockDivider(8); // 2.4MHz
+var ZeroRPC = require("zerorpc");
+
+var zeroRPClient = new Zerorpc.Client();
+zeroRPCClient.connect("tcp://127.0.0.1:4242");
+
+var RPIO = {
+  addChannelPulse: function(gpio, rate, callback) {
+    zeroRPCClient.invoke("addChannelPulse", gpio, rate, callback);
+  }
+};
 
 /**
  * RPIO motor implementation using node-rpio.
  *
  */
-var RPIOMotor = function (name, pin, minWidth, maxWidth, bidirectional) {
+var RPIOMotor = function (name, pin, minWidth, maxWidth) {
   // Defaults
   if (!name) name = "Unnamed Motor";
   if (!pin) pin = 12;
   if (!minWidth) minWidth = 1000;
   if (!maxWidth) maxWidth = 2000;
-  if (!bidirectional) bidirectional = false;
 
   this.name = name;
   this.pin = pin;
   this.minWidth = minWidth;
   this.maxWidth = maxWidth;
-  this.bidirectional = bidirectional;
   this.W = 0;
 };
 
 module.exports = RPIOMotor;
 
-RPIOMotor.prototype.start = function (callback) {
-  this.W = 0;
-  RPIO.setFunction(this.pin, RPIO.PWM);
-  RPIO.pwmSetRange(this.pin, this.maxWidth);
-  RPIO.pwmSetData(this.pin, this.minWidth + (this.maxWidth - this.minWidth) / 2);
-};
-
 RPIOMotor.prototype.stop = function () {
-  this.W = 0;
-  RPIO.setFunction(this.pin, RPIO.INPUT);
+  this.setW(0);
 };
 
 RPIOMotor.prototype.setW = function(W) {
-  this.W = Math.min(100, Math.max(this.bidirectional ? -100 : 0, W));
-  RPIO.pwmSetData(this.pin, this.minWidth + ((this.maxWidth - this.minWidth) / 2) * (1 + this.W/100));
+  this.W = Math.min(100, Math.max(0, W));
+  RPIO.addChannelPulse(this.pin, this.minWidth + (this.maxWidth - this.minWidth) * (this.W / 100));
 };
 
 RPIOMotor.prototype.increaseW = function(step) {
