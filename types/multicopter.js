@@ -24,7 +24,7 @@ MulticopterType.prototype.getDYMotorSpeed = zeroSpeed;
 MulticopterType.prototype.getDZMotorSpeed = zeroSpeed;
 MulticopterType.prototype.getAltitudeMotorSpeed = zeroSpeed;
 
-MulticopterType.prototype.update = function() {
+MulticopterType.prototype.update = function(callback) {
   function addMotorSpeeds(s1, s2) {
     for (var i in s1) s1[i] = s1[i] + s2[i];
   }
@@ -37,9 +37,9 @@ MulticopterType.prototype.update = function() {
   addMotorSpeeds(motorSpeed, this.getDYMotorSpeed());
   addMotorSpeeds(motorSpeed, this.getDZMotorSpeed());
   addMotorSpeeds(motorSpeed, this.getAltitudeMotorSpeed());
-  this.setMotorSpeed(motorSpeed);
+  this.setMotorSpeed(motorSpeed, callback);
 };
 
-MulticopterType.prototype.setMotorSpeed = function (motorSpeed) {
-  this.controller.setMotorSpeed(motorSpeed);
+MulticopterType.prototype.setMotorSpeed = function (motorSpeed, callback) {
+  this.controller.setMotorSpeed(motorSpeed, callback);
 };

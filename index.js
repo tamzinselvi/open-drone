@@ -1,6 +1,8 @@
 var Types = require("./types");
 var Motors = require("./motors");
 
+var async = require('async');
+
 /**
  * The core to the open-drone system.  The ODController controls a UAV (in the future multiple), providing an interface
  * for a clientss to connect in for remote control.
@@ -39,26 +41,39 @@ var ODController = function (motors, sensometer, options) {
   this.type = new options.type(this);
   this.motors = motors;
   this.sensometer = sensometer;
+  this.setTargetDZ(this.options.targetDZ);
 };
 
 module.exports = ODController;
 
 ODController.defaultOptions = {
-  type: Types.QuadcopterI
-};
-
-ODController.prototype.start = function () {
-  for (var i in motorSpeed) this.motors[i].start();
+  type: Types.QuadcopterX,
+  targetDZ: 0
 };
 
 ODController.prototype.stop = function () {
   for (var i in motorSpeed) this.motors[i].stop();
 };
 
-ODController.prototype.setMotorSpeed = function (motorSpeed) {
-  for (var i in motorSpeed) this.motors[i].setW(motorSpeed[i]);
+ODController.prototype.setTargetDZ = function (dz) {
+  this.targetDZ = dz;
+  this.type.dzPIDController.setTarget(dz);
 };
 
-ODController.update = function() {
-  this.type.update();
+ODController.prototype.setMotorSpeed = function (motorSpeed, callback) {
+  var _this = this;
+  var pl = [];
+  var sf = function(i) { 
+    return function(callback) {
+      _this.motors[i].setW(motorSpeed[i]);
+    };
+  };
+  for (var i in motorSpeed) pl[i] = sf(i);
+  async.parallel(pl, callback);
+};
+
+ODController.update = function(callback) {
+  this.controller.sensometer.update(function() {
+    this.type.update(callback);
+  });
 };
