@@ -38,7 +38,8 @@ function ready() {
       process.exit(0);
     }
     else {
-      console.log("Invalid entry!");
+      if (Number.isInteger(Number.parseInt(a))) motor.setW(Number.parseInt(a));
+      else console.log("Invalid entry!");
       ready();
     }
   });
