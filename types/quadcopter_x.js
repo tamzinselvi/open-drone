@@ -22,7 +22,15 @@ var PIDController = require("node-pid-controller");
  * Motor 03: CCW | -Y / -Pitch -Roll -Yaw
  *
  */
-var QuadcopterXType = Object.create(MulticopterType);
+var QuadcopterXType = function() { 
+  MulticopterType.apply(this, arguments);
+};
+
+QuadcopterXType.prototype = new MulticopterType();
+
+QuadcopterXType.prototype.constructor = QuadcopterXType;
+
+module.exports = QuadcopterXType;
 
 // Setup PID controllers
 QuadcopterXType.prototype.pitchPIDController = new PIDController(0, 0, 0);
@@ -30,7 +38,7 @@ QuadcopterXType.prototype.yawPIDController = new PIDController(0, 0, 0);
 QuadcopterXType.prototype.rollPIDController = new PIDController(0, 0, 0);
 QuadcopterXType.prototype.dxPIDController = new PIDController(0, 0, 0);
 QuadcopterXType.prototype.dyPIDController = new PIDController(0, 0, 0);
-QuadcopterXType.prototype.dzPIDController = new PIDController(0, 0, 0);
+QuadcopterXType.prototype.dzPIDController = new PIDController(0.03, 0, 0);
 QuadcopterXType.prototype.altitudePIDController = new PIDController(0, 0, 0);
 
 // Motor speed functions, updates PID

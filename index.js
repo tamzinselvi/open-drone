@@ -35,13 +35,13 @@ var async = require('async');
  *
  */
 var ODController = function (motors, sensometer, options) {
-  if (!options) options = this.defaultOptions;
-  else if (typeof(options) === "object") for (var i in this.defaultOptions) if (!options[i]) options[i] = this.defaultOptions;
+  if (!options) options = ODController.defaultOptions;
+  else if (typeof(options) === "object") for (var i in ODController.defaultOptions) if (!options[i]) options[i] = ODController.defaultOptions;
   else throw new TypeError("Invalid type for options argument in ODController constructor, type provided: " + typeof(options));
   this.type = new options.type(this);
   this.motors = motors;
   this.sensometer = sensometer;
-  this.setTargetDZ(this.options.targetDZ);
+  this.setTargetDZ(options.targetDZ);
 };
 
 module.exports = ODController;
@@ -63,17 +63,19 @@ ODController.prototype.setTargetDZ = function (dz) {
 ODController.prototype.setMotorSpeed = function (motorSpeed, callback) {
   var _this = this;
   var pl = [];
-  var sf = function(i) { 
+  var sf = function(i) {
     return function(callback) {
       _this.motors[i].setW(motorSpeed[i]);
     };
   };
   for (var i in motorSpeed) pl[i] = sf(i);
   async.parallel(pl, callback);
+  callback();
 };
 
-ODController.update = function(callback) {
-  this.controller.sensometer.update(function() {
-    this.type.update(callback);
+ODController.prototype.update = function(callback) {
+  var _this = this;
+  _this.sensometer.update(function() {
+    _this.type.update(callback);
   });
 };

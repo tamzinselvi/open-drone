@@ -12,7 +12,7 @@ if not PWM.is_setup():
 
 class RPIOHelper(object):
     def addChannelPulse(self, gpio, rate):
-        PWM.add_channel_pulse(1, gpio, 0, rate)
+        PWM.add_channel_pulse(1, gpio, 0, int(rate))
 
 s = zerorpc.Server(RPIOHelper())
 s.bind("tcp://0.0.0.0:4242")
