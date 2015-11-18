@@ -11,6 +11,10 @@ ODClient.prototype.stop = function() {
   this.socket.emit('stop');
 };
 
+ODClient.prototype.start = function() {
+  this.socket.emit('start');
+};
+
 ODClient.prototype.setTargetDZ = function(value) {
   this.socket.emit('set target', {
     measure: "dz",
