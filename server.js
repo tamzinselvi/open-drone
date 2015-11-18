@@ -2,6 +2,7 @@ var ODServer = function(io, controller) {
   var _this = this;
   io.on('connection', function(socket) {
     console.log("client connected");
+    socket.emit('motor status', _this.controller.active);
     function pingLoop() {
       _this.ping = false;
       socket.emit('ping');
