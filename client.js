@@ -1,7 +1,8 @@
 var ODClient = function(socket) {
+  var _this = this;
   this.socket = socket;
   this.socket.on('ping', function() {
-    this.socket.emit('ping');
+    _this.socket.emit('ping');
   });
 };
 

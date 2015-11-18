@@ -2,7 +2,10 @@
   "name": "open-drone",
   "version": "0.0.1",
   "description": "An open-source platform for autonomous and remote control of unmanned aerial vehicles.",
-  "author": "Tom Selvi <tomselvi@gmail.com>",
+  "author": {
+    "name": "Tom Selvi",
+    "email": "tomselvi@gmail.com"
+  },
   "main": "main.js",
   "directories": {
     "test": "tests"
@@ -13,13 +16,13 @@
     "node-pid-controller": "0.1.2",
     "zerorpc": "0.9.6"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "scripts": {
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/tomselvi/open-drone"
+    "url": "git+https://github.com/tomselvi/open-drone.git"
   },
   "keywords": [
     "alpha"
@@ -27,5 +30,12 @@
   "bugs": {
     "url": "https://github.com/tomselvi/open-drone/issues"
   },
-  "homepage": "https://github.com/tomselvi/open-drone"
+  "homepage": "https://github.com/tomselvi/open-drone",
+  "gitHead": "ea1b388331a1e0e068f226c370a948ccfbb123eb",
+  "readme": "# Open Drone\nAn open-source project to support Node controlled UAVs.\n\nMore coming soon!\n",
+  "readmeFilename": "README.md",
+  "_id": "open-drone@0.0.1",
+  "_shasum": "ea8350bc8f898b48d3146298f133cb8b704f34a4",
+  "_from": "tomselvi/open-drone",
+  "_resolved": "git://github.com/tomselvi/open-drone.git#ea1b388331a1e0e068f226c370a948ccfbb123eb"
 }

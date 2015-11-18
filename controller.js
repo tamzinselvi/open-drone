@@ -35,7 +35,7 @@ var async = require('async');
  */
 var ODController = function (motors, sensometer, options) {
   if (!options) options = {};
-  if (typeof(options) === "object") for (var i in ODController.defaultOptions) if (!options[i]) options[i] = ODController.defaultOptions;
+  if (typeof(options) === "object") for (var i in ODController.defaultOptions) if (!options[i]) options[i] = ODController.defaultOptions[i];
   else throw new TypeError("Invalid type for options argument in ODController constructor, type provided: " + typeof(options));
   this.options = options;
   this.type = new options.type(this);
@@ -55,10 +55,12 @@ ODController.defaultOptions = {
 };
 
 ODController.prototype.start = function () {
+  console.log("controller starting...");
   this.active = true;
 };
 
 ODController.prototype.stop = function () {
+  console.log("controller stopping...");
   this.active = false;
 };
 
