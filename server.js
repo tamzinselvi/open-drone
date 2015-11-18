@@ -3,18 +3,23 @@ var ODServer = function(io, controller) {
   io.on('connection', function(socket) {
     console.log("client connected");
     socket.emit('motor status', _this.controller.active);
-    function pingLoop() {
-      _this.ping = false;
-      socket.emit('ping');
-      console.log('ping sent');
-      setTimeout(function() {
-        if (_this.ping === false) {
-          console.log('ping not received, setting default targets');
-          _this.controller.setDefaultTargets();
-        }
-        pingLoop();
-      }, 500);
-    }
+    // function pingLoop() {
+      // _this.ping = false;
+      // socket.emit('ping');
+      // console.log('ping sent');
+      // setTimeout(function() {
+        // if (_this.ping === false) {
+          // console.log('ping not received, setting default targets');
+          // _this.controller.setDefaultTargets();
+        // }
+        // pingLoop();
+      // }, 2000);
+    // }
+
+    socket.on('disconnect', function() {
+      console.log("client disconnected, restoring default targets");
+      _this.controller.setDefaultTargets();
+    });
 
     socket.on('set target', function(data) {
       _this.setTarget(data);
@@ -35,7 +40,7 @@ var ODServer = function(io, controller) {
       _this.ping = true;
     });
 
-    pingLoop();
+    // pingLoop();
   });
   this.io = io;
   this.controller = controller;
