@@ -34,28 +34,38 @@ var async = require('async');
  *
  */
 var ODController = function (motors, sensometer, options) {
-  if (!options) options = ODController.defaultOptions;
-  else if (typeof(options) === "object") for (var i in ODController.defaultOptions) if (!options[i]) options[i] = ODController.defaultOptions;
+  if (!options) options = {};
+  if (typeof(options) === "object") for (var i in ODController.defaultOptions) if (!options[i]) options[i] = ODController.defaultOptions;
   else throw new TypeError("Invalid type for options argument in ODController constructor, type provided: " + typeof(options));
+  this.options = options;
   this.type = new options.type(this);
   this.motors = motors;
   this.sensometer = sensometer;
-  this.setTargetDZ(options.targetDZ);
+  this.setDefaultTargets();
+  this.active = false;
 };
 
 module.exports = ODController;
 
 ODController.defaultOptions = {
   type: Types.QuadcopterX,
-  targetDZ: 0
+  targetDZ: 0,
+  targetPitch: 180,
+  targetRoll: 180
+};
+
+ODController.prototype.start = function () {
+  this.active = true;
 };
 
 ODController.prototype.stop = function () {
-  for (var i in motorSpeed) this.motors[i].stop();
+  this.active = false;
 };
 
 ODController.prototype.setDefaultTargets = function () {
-
+  this.setTargetDZ(this.options.targetDZ);
+  this.setTargetPitch(this.options.targetPitch);
+  this.setTargetRoll(this.options.targetRoll);
 };
 
 ODController.prototype.setTargetDZ = function (dz) {
@@ -63,7 +73,18 @@ ODController.prototype.setTargetDZ = function (dz) {
   this.type.dzPIDController.setTarget(dz);
 };
 
+ODController.prototype.setTargetPitch = function (pitch) {
+  this.targetPitch = pitch;
+  this.type.pitchPIDController.setTarget(pitch);
+};
+
+ODController.prototype.setTargetRoll = function (roll) {
+  this.targetRoll = roll;
+  this.type.rollPIDController.setTarget(roll);
+};
+
 ODController.prototype.setMotorSpeed = function (motorSpeed, callback) {
+  if (!this.active) for (var y in motorSpeed) motorSpeed[y] = 0;
   var _this = this;
   var pl = [];
   // async helper function for 

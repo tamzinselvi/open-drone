@@ -30,10 +30,6 @@ var RPIOMotor = function (name, pin, minWidth, maxWidth) {
 
 module.exports = RPIOMotor;
 
-RPIOMotor.prototype.stop = function (callback) {
-  this.setW(0, callback);
-};
-
 RPIOMotor.prototype.setW = function(W, callback) {
   this.W = Math.min(100, Math.max(0, W));
   RPIO.addChannelPulse(this.pin, this.minWidth + (this.maxWidth - this.minWidth) * (this.W / 100), callback);

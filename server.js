@@ -13,6 +13,7 @@ var ODServer = function(io, controller) {
     }
 
     socket.on('set target', this.setTarget);
+    socket.on('stop', this.controller.stop());
     socket.on('ping', function() {
       _this.ping = true;
     });

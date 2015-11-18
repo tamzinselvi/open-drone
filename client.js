@@ -7,6 +7,10 @@ var ODClient = function(socket) {
 
 module.exports = ODClient;
 
+ODClient.prototype.stop = function() {
+  this.socket.emit('stop');
+};
+
 ODClient.prototype.setTargetDZ = function(value) {
   this.socket.emit('set target', {
     measure: "dz",
