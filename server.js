@@ -5,8 +5,10 @@ var ODServer = function(io, controller) {
     function pingLoop() {
       _this.ping = false;
       socket.emit('ping');
+      console.log('ping sent');
       setTimeout(function() {
         if (_this.ping === false) {
+          console.log('ping not received, setting default targets');
           _this.controller.setDefaultTargets();
         }
         pingLoop();
@@ -16,17 +18,22 @@ var ODServer = function(io, controller) {
     socket.on('set target', function(data) {
       _this.setTarget(data);
     });
+
     socket.on('stop', function() {
       _this.controller.stop();
       socket.emit("stop");
     });
+
     socket.on('start', function() {
       _this.controller.start();
       socket.emit("start");
     });
+
     socket.on('ping', function() {
+      console.log('ping received');
       _this.ping = true;
     });
+
     pingLoop();
   });
   this.io = io;
@@ -36,7 +43,10 @@ var ODServer = function(io, controller) {
 module.exports = ODServer;
 
 ODServer.prototype.setTarget = function(data) {
-  if (data.measure == "dz") {
+  if (data.measure == "dz")
     this.controller.setTargetDZ(data.value);
-  }
+  else if (data.measure == "pitch")
+    this.controller.setTargetPitch(data.value);
+  else if (data.measure == "roll")
+    this.controller.setTargetRoll(data.value);
 };
